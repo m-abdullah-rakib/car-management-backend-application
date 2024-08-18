@@ -25,13 +25,13 @@ public class CarService {
     public ResponseEntity<FreeCarsResponse> getFreeCars() {
         List<AuthenticatedUserCar> freeCars = authenticatedUserCarRepository.findByUserIdIsNull();
         List<FreeCarResponseData> freeCarResponseDataList = freeCars.stream()
-                .map(this::convertToDto)
+                .map(this::convertToFreeCarResponseDataDto)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(new FreeCarsResponse(freeCarResponseDataList));
     }
 
-    private FreeCarResponseData convertToDto(AuthenticatedUserCar authenticatedUserCar) {
+    private FreeCarResponseData convertToFreeCarResponseDataDto(AuthenticatedUserCar authenticatedUserCar) {
         return new FreeCarResponseData(
                 authenticatedUserCar.getId(),
                 authenticatedUserCar.getModel(),
