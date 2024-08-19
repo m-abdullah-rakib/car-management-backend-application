@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RecentTransactionsRepository extends JpaRepository<RecentTransactions, Long> {
-    @Procedure(name = "RecentTransactions")
+    @Procedure(name = "recentTransactions")
     List<RecentTransactions> recentTransactions(@Param("userId") Long userId);
-
 }
