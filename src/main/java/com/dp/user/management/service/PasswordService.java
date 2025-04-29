@@ -5,7 +5,7 @@ import com.dp.user.management.dto.request.ResetPasswordSendEmailStepRequest;
 import com.dp.user.management.dto.response.PasswordCommonResponse;
 import com.dp.user.management.model.User;
 import com.dp.user.management.repository.UserRepository;
-import jakarta.validation.Valid;
+import com.dp.user.management.util.exception.EmailSendException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +20,7 @@ public class PasswordService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public ResponseEntity<?> changePassword(ChangePasswordRequest changePasswordRequest, String email) {
         User user;
@@ -58,8 +59,12 @@ public class PasswordService {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
-        // todo: Send email to this valid user
-
-        return ResponseEntity.ok(new PasswordCommonResponse("An email has been sent to your account. Please check your inbox for further instructions."));
+        try {
+            // Send email to this valid user, it's synchronous (After performing full process of email sending, return statement will execute)
+            emailService.sendOtpInEmail(user.getUsername(), user.getFullName());
+            return ResponseEntity.ok(new PasswordCommonResponse("An email has been sent to your account. Please check your inbox for further instructions."));
+        } catch (EmailSendException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new PasswordCommonResponse("Failed to send email. Please try again later."));
+        }
     }
 }

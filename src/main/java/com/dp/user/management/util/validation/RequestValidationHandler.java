@@ -11,7 +11,7 @@ import org.springframework.validation.FieldError;
 @Component
 public class RequestValidationHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestValidationHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(RequestValidationHandler.class);
 
     public ResponseEntity<?> handleInvalidRequest(BindingResult bindingResult) {
         // Log validation errors
